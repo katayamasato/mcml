@@ -244,14 +244,20 @@ void Spin(double g,
 /***********************************************************
  *	Move the photon s away in the current layer of medium.  
  ****/
-void Hop(PhotonStruct *	Photon_Ptr)
+void Hop(PhotonStruct *	Photon_Ptr,
+         InputStruct  *  In_Ptr )
 {
   double s = Photon_Ptr->s;
+  short  layer = Photon_Ptr->layer;
+  double O1=In_Ptr->layerspecs[layer].O1;
+  double O2=In_Ptr->layerspecs[layer].O2;
 
   Photon_Ptr->x += s*Photon_Ptr->ux;
   Photon_Ptr->y += s*Photon_Ptr->uy;
   Photon_Ptr->z += s*Photon_Ptr->uz;
-}			
+  Photon_Ptr->RR1=pow(Photon_Ptr->x,2.0)+pow(Photon_Ptr->y,2.0)+pow(Photon_Ptr->z-O1,2.0);
+  Photon_Ptr->RR2=pow(Photon_Ptr->x,2.0)+pow(Photon_Ptr->y,2.0)+pow(Photon_Ptr->z-O2,2.0);
+}	
 
 /***********************************************************
  *	If uz != 0, return the photon step size in glass, 
@@ -350,6 +356,17 @@ Boolean HitBoundary(PhotonStruct *  Photon_Ptr,
   
   return(hit);
 }
+int Hitboundary(PhotonStruct *  Photon_Ptr,
+					InputStruct  *  In_Ptr)
+  {
+    short  layer = Photon_Ptr->layer;
+    int Hit;
+    double r;
+
+
+    //if(In_Ptr->layerspecs[layer].R1<r&&In_Ptr->layerspecs[layer].R2)
+
+  }
 
 /***********************************************************
  *	Drop photon weight inside the tissue (not glass).
@@ -692,7 +709,7 @@ void HopInGlass(InputStruct  * In_Ptr,
   }
   else {
     StepSizeInGlass(Photon_Ptr, In_Ptr);
-    Hop(Photon_Ptr);
+    Hop(Photon_Ptr,In_Ptr);
     CrossOrNot(In_Ptr, Photon_Ptr, Out_Ptr);
   }
 }
@@ -718,11 +735,11 @@ void HopDropSpinInTissue(InputStruct  *  In_Ptr,
   StepSizeInTissue(Photon_Ptr, In_Ptr);
   
   if(HitBoundary(Photon_Ptr, In_Ptr)) {
-    Hop(Photon_Ptr);	/* move to boundary plane. */
+    Hop(Photon_Ptr,In_Ptr);	/* move to boundary plane. */
     CrossOrNot(In_Ptr, Photon_Ptr, Out_Ptr);
   }
   else {
-    Hop(Photon_Ptr);
+    Hop(Photon_Ptr,In_Ptr);
     Drop(In_Ptr, Photon_Ptr, Out_Ptr);
     Spin(In_Ptr->layerspecs[Photon_Ptr->layer].g, 
 		Photon_Ptr);

@@ -85,7 +85,7 @@
  *	Structure used to describe a photon packet.
  ****/
 typedef struct {
-  double x, y ,z;	/* Cartesian coordinates.[cm] */
+  double x, y ,z,RR1,RR2;	/* Cartesian coordinates.[cm] */
   double ux, uy, uz;/* directional cosines of a photon. */
   double w;			/* weight. */
   Boolean dead;		/* 1 if photon is terminated. */
