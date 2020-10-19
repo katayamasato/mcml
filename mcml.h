@@ -114,6 +114,12 @@ typedef struct {
   double mua;	    /* absorption coefficient. [1/cm] */
   double mus;	    /* scattering coefficient. [1/cm] */
   double g;		    /* anisotropy. */
+  double r1;
+  double r2;
+  double theta1;
+  double theta2;
+  double O1;
+  double O2;
   
   double cos_crit0,	cos_crit1;	
 } LayerStruct;
